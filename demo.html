@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation India</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 class="center">Translation India</h1>
+    <img src="./logo translation .png" alt="Translation India" class="logo">
+    <div class="container">
+        <div class="translator_property">
+            <ul class="nuv_item">
+                <li>
+                    <select id="input-language">
+                        <option value="hi">Hindi</option>
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ar">Arabic</option>
+                        <option value="ru">Russian</option>
+                        <option value="ja">Japanese</option>
+                        <option value="af">Afrikaans</option>
+                        <option value="bn">Bengali</option>
+                        <option value="es">Spanish</option>
+                        <option value="gu">Gujrati</option>
+                        <option value="ja">Japanese</option>
+                        <option value="mr">Marathi</option>
+                        <option value="ne">Nepali</option>
+                        <option value="ta">Tamil</option>
+                        <option value="tr">Turkish</option>
+                    </select>
+                </li>
+                <li class="bx bx-transfer"></li>
+                <li>
+                    <select id="output-language">
+                        <option value="en">English</option>
+                        <option value="hi">Hindi</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ar">Arabic</option>
+                        <option value="ru">Russian</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ja">Japanese</option>
+                        <option value="af">Afrikaans</option>
+                        <option value="bn">Bengali</option>
+                        <option value="es">Spanish</option>
+                        <option value="gu">Gujrati</option>
+                        <option value="ja">Japanese</option>
+                        <option value="mr">Marathi</option>
+                        <option value="ne">Nepali</option>
+                        <option value="ta">Tamil</option>
+                        <option value="tr">Turkish</option>
+                    </select>
+                </li>
+            </ul>
+            <div class="write_box">
+                <div class="Property_from">
+                    <textarea maxlength="5000" class="fromText" id="input-text" placeholder="Enter text to translate..."></textarea>
+                    <span class="bx bx-copy"></span>
+                    <div class="icons">
+                        <span id="input-mic" class="bx bx-microphone">🎤</span>
+                        <span id="input-volume" class="bx bx-volume-full"></span>
+                    </div>
+                    <div class="code_length">0/5,000</div>
+                </div>
+                <button id="translateBtn">Translate</button> <!-- Translation button -->
+                <div class="Property_trans"></div>
+                <textarea class="totranslate" id="output-text" readonly placeholder="Translation will appear here..."></textarea>
+                <div class="icons">
+                    <span id="output-mic" class="bx bx-microphone">🎤</span>
+                    <span id="output-volume" class="bx bx-volume-full"></span>
+                    <span class="bx bx-copy"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+        <p>TRANSLATION INDIA has a rich experience of 23 Years and we are on mission to provide high-quality <br>
+             simultaneous translation and interpretation services to businesses, Government Organisation’s,<br>
+              Heads of State , Fortune 500 companies at reasonable prices while maintaining the quality and <br>
+              outstanding customer service. We at Translation India, keep ourselves abreast with the latest <br>
+               translation interpretation equipment , technologically advanced wireless conference system and <br> 
+               certified high-quality simultaneous translation equipment such as wireless interpretation systems,<br>
+                Interpretation ISO booth, tour guide systems etc. We also offer Voting Pads- Buzzers while keeping <br>
+                 a competitive cost and services par excellence unmatched. We understand very well that simultaneous <br>
+                  translation forms the backbone of any successful event and for that we have Qualified Trained staff <br>
+                   with 24 hours support.We ensure that our interpretation services are technologically advanced and well <br>
+                    equipped to deliver <br>the complete message to the entire audience without any hassle. We have industry-specific <br>
+                     experienced interpreters and best in class project management teams and translation equipment across the globe <br>
+                      with over 200+ digital language channels. Translation India is now a Globally recognised one stop destination <br>
+                       for multilingual translation solutions at competitive budget. We understand the importance of multilingual <br>
+                        communications and therefore we only offer certified top notch branded simultaneous translation equipment <br>
+                        for rental or hire. </p></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function translateText() {
+            const inputText = document.getElementById('input-text').value;
+            const inputLanguage = document.getElementById('input-language').value;
+            const outputLanguage = document.getElementById('output-language').value;
+
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLanguage}&tl=${outputLanguage}&dt=t&q=${encodeURIComponent(inputText)}`;
+
+            $.ajax({
+                url: url,
+                success: function(result) {
+                    const translatedText = result[0][0][0];
+                    document.getElementById('output-text').value = translatedText;
+
+                    const synthesis = new SpeechSynthesisUtterance();
+                    synthesis.lang = outputLanguage;
+                    synthesis.text = translatedText;
+                    speechSynthesis.speak(synthesis);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Translation error:', error);
+                }
+            });
+        }
+
+        const inputMic = document.getElementById('input-mic');
+        inputMic.addEventListener('click', () => {
+            const recognition = new webkitSpeechRecognition(); // For Chrome
+            recognition.lang = document.getElementById('input-language').value;
+            recognition.onresult = (event) => {
+                const result = event.results[0][0].transcript;
+                document.getElementById('input-text').value = result;
+                translateText(); // Call translation function
+            };
+            recognition.start();
+        });
+
+        const outputMic = document.getElementById('output-mic');
+        outputMic.addEventListener('click', () => {
+            const translatedText = document.getElementById('output-text').value;
+            speakText(translatedText, document.getElementById('output-language').value);
+        });
+
+        const inputVolume = document.getElementById('input-volume');
+        inputVolume.addEventListener('click', () => {
+            const inputText = document.getElementById('input-text').value;
+            speakText(inputText, document.getElementById('input-language').value);
+        });
+
+        const outputVolume = document.getElementById('output-volume');
+        outputVolume.addEventListener('click', () => {
+            const outputText = document.getElementById('output-text').value;
+            speakText(outputText, document.getElementById('output-language').value);
+        });
+
+        const translateBtn = document.getElementById('translateBtn');
+        translateBtn.addEventListener('click', translateText);
+
+        function speakText(text, lang) {
+            const synthesis = new SpeechSynthesisUtterance();
+            synthesis.lang = lang;
+            synthesis.text = text;
+            speechSynthesis.speak(synthesis);
+        }
+    </script>
+</body>
+</html>
